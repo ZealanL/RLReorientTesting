@@ -1,0 +1,36 @@
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Ninja
+.ninja*
+build.ninja
+
+# Build-related
+RocketSim.Dir/
+x86/
+x64/
+out/
+*.obj
+*.lib
+*.exe
+*.pdb
+*.ilk
+*.tmp
+
+# Visual Studio (not using anything VS-related)
+.vs/
+*.vcxproj
+*.sln
+*.filters
+*.user
+
