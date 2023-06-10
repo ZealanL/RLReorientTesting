@@ -1,8 +1,6 @@
 #include "Framework.h"
 
-#include "Methods/RM_RLU.h"
-#include "Methods/RM_RLU_ML.h"
-#include "Methods/RM_RedUtils.h"
+#include "Methods/Methods.h"
 #include "TestCase.h"
 #include "TestResult.h"
 
@@ -33,7 +31,7 @@ RotMat MakeRandomRot() {
 TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 	constexpr float
 		STOP_ANGLE_THRESHOLD = 0.05f, // Angle distance under this is considered to have reached the target position
-		STOP_ANGVEL_THRESHOLD = 0.05f, // Anglular velocity threshold underthis is considered to have stopped
+		STOP_ANGVEL_THRESHOLD = 0.05f, // Anglular velocity threshold under this is considered to have stopped
 		UP_ERROR_SCALE = 0.4f, // Upwards error matters less than forwards error, so its scaled down
 		TIMEOUT_SECONDS = 10;
 
@@ -47,6 +45,14 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 	
 	bool reached = false;
 	float lastError = 0;
+
+	// Compute minimum possible error (very naive)
+	// Does not include overshoot
+	float minimumPossibleError = 0;
+	{
+		float dist = Math::RotMatDist(testCase.rot, testCase.targetRot);
+		//RLConst::CAR_MAX_ANG_SPEED
+	}
 
 	for (float t = 0; t < TIMEOUT_SECONDS; t += TICKTIME) {
 		{ // Move ball out of the way
@@ -101,15 +107,9 @@ int main() {
 	RocketSim::Init(RS_COLLISION_MESHES_PATH);
 	g_Arena = Arena::Create(GameMode::THE_VOID);
 	g_Car = g_Arena->AddCar(Team::BLUE);
-
-	vector<ReorientMethod*> methods = {
-		new RM_RLU(),
-		new RM_RLU_ML(),
-		new RM_RedUtils()
-	};
 	
-	if (!methods.empty()) {
-		RS_LOG("Running reorient tests on " << methods.size() << " methods.");
+	if (!g_Methods.empty()) {
+		RS_LOG("Running reorient tests on " << g_Methods.size() << " methods.");
 	} else {
 		RS_LOG("No reorient methods to run!");
 		return EXIT_FAILURE;
@@ -126,7 +126,7 @@ int main() {
 	}
 
 	// Run tests for all methods
-	for (ReorientMethod* method : methods) {
+	for (ReorientMethod* method : g_Methods) {
 		RS_LOG("======================================");
 		RS_LOG("Method: " << method->GetName());
 

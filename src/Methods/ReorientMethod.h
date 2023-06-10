@@ -1,5 +1,5 @@
 #pragma once
-#include "Framework.h"
+#include "../Framework.h"
 
 struct RControls {
 	float pitch, yaw, roll;

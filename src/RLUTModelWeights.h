@@ -1,10 +1,5 @@
-#include "RM_RLU_ML.h"
-
-#include "../RLUHelp/RLUHelp.h"
-#include "../../RLUtilities/inc/mechanics/reorient_ML.h"
-
-// TODO: Move this
-constexpr uint32_t MODEL_WEIGHTS[320] = {
+#include <stdint.h>
+constexpr uint32_t RLUT_MODEL_WEIGHTS[320] = {
 	0x3eb8a533, 0xbee13bd2, 0xbed8bee4, 0xbf257855, 0x3dd34430, 0x3e0a2cec, 0x3eda085b, 0xbfffd102, 0x3e1dcfaa, 0xbd3c0ff2, 0x3f6970d6, 0x3fe6bede, 0xbd6a0b49, 0xbe2797b6, 0x3f11e2f7, 0x3fd11bea,
 	0xbeb0786e, 0x3ffee165, 0x3f737f5c, 0x3fb313eb, 0x3ea8378d, 0xbb60667b, 0x3fa0fe54, 0xbf98d52f, 0x3e7945ae, 0xbf71fd9f, 0x3e11ccef, 0x3eb6189e, 0xbe9ba946, 0xbed9d3f1, 0xbfacdcfb, 0xbf3be0d9,
 	0x3f18729f, 0xbe418634, 0x3f30472f, 0xbda65e7f, 0x3f884848, 0x3fc166ce, 0x3f9752aa, 0x3f26bf8c, 0xbed2278f, 0x3e894ea3, 0xbd97f00f, 0x3e9f2afc, 0xbe7aaeb0, 0xbb64e87a, 0x3e20b5cb, 0xbe4d30f5,
@@ -26,31 +21,3 @@ constexpr uint32_t MODEL_WEIGHTS[320] = {
 	0xbf2cd4d9, 0x3e9e4f07, 0xc01f3e5e, 0xbe4835f8, 0x3e02cac7, 0x3e62cebc, 0xbfe0d82f, 0x3fda2809, 0xbfb5c247, 0xbf243980, 0xbfb64e75, 0x3f03f41b, 0x3f7d6d51, 0x3f1eb33c, 0xbfc4183f, 0x3f8419ae,
 	0xbfb31397, 0xbf247778, 0xc03127e2, 0x3e8f8ef4, 0x3fe48ec2, 0xbdda2c5d, 0x3fade441, 0x3f8358cb, 0x3f7fde1c, 0xc000ca53, 0xbf2e59ab, 0xbdc30624, 0xbfc32175, 0xbee5e8e2, 0x3f4c887f, 0xbfe3e89b
 };
-
-RControls RM_RLU_ML::Run(RM_RUN_ARGS) {
-
-	static bool first = true;
-	if (first) {
-		first = false;
-		ReorientML::set_model(Model(
-			std::vector<float>(
-				(float*)MODEL_WEIGHTS,
-				(float*)MODEL_WEIGHTS + (sizeof(MODEL_WEIGHTS) / sizeof(float))
-				)
-		));
-	}
-
-	Car rluCar = Car();
-	rluCar.angular_velocity = RLUHelp::Convert(angVel);
-	rluCar.orientation = RLUHelp::Convert(rot);
-
-	ReorientML rluReorient = ReorientML(rluCar);
-	rluReorient.target_orientation = RLUHelp::Convert(targetRot);
-	rluReorient.step(TICKTIME);
-
-	return {
-		rluReorient.controls.pitch,
-		rluReorient.controls.yaw,
-		rluReorient.controls.roll
-	};
-}
