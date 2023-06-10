@@ -155,12 +155,10 @@ int main() {
 			RS_LOG(" > FAILED to finish " << numFailed << " / " << TEST_AMOUNT << " tests.");
 		}
 
-		for (size_t i = 0; i < 2; i++) {
-			RS_LOG(
-				"Average " << (i ? "overshoot error" : "error") << ((numFailed > 0) ? " (not counting failed tests): " : ": ") <<
-				std::setprecision(5) << (i ? avgOvershootError : avgError)
-			);
-		}
+		float speed = Math::ErrorToScorePercent(avgError);
+		float accuracy = Math::ErrorToScorePercent(avgOvershootError);
+		RS_LOG(" > Speed: " << std::setprecision(4) << speed << "%");
+		RS_LOG(" > Accuracy: " << std::setprecision(4) << accuracy << "%");
 	}
 
 	delete g_Arena;

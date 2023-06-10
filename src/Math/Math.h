@@ -3,4 +3,6 @@
 
 namespace Math {
 	float RotMatDist(const RotMat& a, const RotMat& b);
+
+	float ErrorToScorePercent(float error);
 }
