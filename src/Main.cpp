@@ -44,6 +44,9 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 
 	TestResult result;
 	result.dnf = true;
+	
+	bool reached = false;
+	float lastError = 0;
 
 	for (float t = 0; t < TIMEOUT_SECONDS; t += TICKTIME) {
 		{ // Move ball out of the way
@@ -70,13 +73,25 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 
 		// Calculate error
 		float error = Math::RotMatDist(carState.rotMat, testCase.targetRot) / M_PI;
-		if (error < STOP_ANGLE_THRESHOLD && carState.angVel.LengthSq() < (STOP_ANGVEL_THRESHOLD * STOP_ANGVEL_THRESHOLD)) {
-			// We're done
-			result.dnf = false;
-			break;
+		if (error < STOP_ANGLE_THRESHOLD) {
+			if (carState.angVel.LengthSq() < (STOP_ANGVEL_THRESHOLD * STOP_ANGVEL_THRESHOLD)) {
+				// We're done
+				result.dnf = false;
+				break;
+			} else {
+				// We reached the target angle
+				// Keep track of this so that we can mark further error as overshooting
+				reached = true;
+			}
 		}
 
-		result.error += error;
+		if (reached && error > lastError) {
+			result.overshootError += error;
+		} else {
+			result.error += error;
+		}
+
+		lastError = error;
 	}
 
 	return result;
@@ -115,7 +130,9 @@ int main() {
 		RS_LOG("======================================");
 		RS_LOG("Method: " << method->GetName());
 
-		float totalError = 0;
+		float
+			totalError = 0,
+			totalOvershootError = 0;
 
 		size_t numFailed = 0;
 		for (size_t i = 0; i < TEST_AMOUNT; i++) {
@@ -123,12 +140,14 @@ int main() {
 
 			if (!testResult.dnf) {
 				totalError += testResult.error;
+				totalOvershootError += testResult.overshootError;
 			} else {
 				numFailed++;
 			}
 		}
 
 		float avgError = totalError / TEST_AMOUNT;
+		float avgOvershootError = totalOvershootError / TEST_AMOUNT;
 
 		if (numFailed == 0) {
 			RS_LOG(" > Finished all tests.");
@@ -136,7 +155,12 @@ int main() {
 			RS_LOG(" > FAILED to finish " << numFailed << " / " << TEST_AMOUNT << " tests.");
 		}
 
-		RS_LOG("Average error" << ((numFailed > 0) ? " (not counting failed tests): " : ": ") << avgError);
+		for (size_t i = 0; i < 2; i++) {
+			RS_LOG(
+				"Average " << (i ? "overshoot error" : "error") << ((numFailed > 0) ? " (not counting failed tests): " : ": ") <<
+				std::setprecision(5) << (i ? avgOvershootError : avgError)
+			);
+		}
 	}
 
 	delete g_Arena;
