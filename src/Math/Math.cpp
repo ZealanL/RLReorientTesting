@@ -8,6 +8,6 @@ float Math::RotMatDist(const RotMat& a, const RotMat& b) {
 	return qA.angleShortestPath(qB);
 }
 
-float Math::ErrorToScorePercent(float error) {
-	return (1 / (1 + error / 16)) * 100;
+float Math::ErrorToScorePercent(float error, float scale) {
+	return (1 / (1 + error / scale)) * 100;
 }

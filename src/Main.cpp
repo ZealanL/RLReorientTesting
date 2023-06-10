@@ -167,8 +167,8 @@ int main() {
 			RS_LOG(" > FAILED to finish " << numFailed << " / " << TEST_AMOUNT << " tests.");
 		}
 
-		float speed = Math::ErrorToScorePercent(avgError);
-		float accuracy = Math::ErrorToScorePercent(avgOvershootError);
+		float speed = Math::ErrorToScorePercent(avgError, 16);
+		float accuracy = Math::ErrorToScorePercent(avgOvershootError, 0.5f);
 		RS_LOG(" > Speed:\t" << std::setprecision(4) << speed << "% (" << avgError << " error)");
 		RS_LOG(" > Accuracy:\t" << std::setprecision(4) << accuracy << "% (" << avgOvershootError << " error)");
 	}
