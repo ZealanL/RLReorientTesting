@@ -1,3 +1,4 @@
+#pragma once
 #include "Framework.h"
 
 struct RControls {
@@ -12,11 +13,11 @@ struct RControls {
 	}
 };
 
-#define RM_RUN_ARGS const RotMat& rot, const Vec& angVel, Vec targetForward, Vec targetUp
+#define RM_RUN_ARGS const RotMat& rot, const Vec& angVel, const RotMat& targetRot
 
 // For once, I'm going to use virtual stuff
 class ReorientMethod {
 public:
-	virtual const char* GetName() const = 0;
+	virtual string GetName() const = 0;
 	virtual RControls Run(RM_RUN_ARGS) = 0;
 };

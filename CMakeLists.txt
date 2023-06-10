@@ -15,6 +15,13 @@ set_target_properties(RLReorientTesting PROPERTIES CXX_STANDARD 20)
 # Include RocketSim
 add_subdirectory(RocketSim)
 
+if (EXISTS ${RS_COLLISION_MESHES_PATH})
+	message("Using RocketSim arena collision mesh path: ${RS_COLLISION_MESHES_PATH}")
+	add_definitions(-DRS_COLLISION_MESHES_PATH="${RS_COLLISION_MESHES_PATH}")
+else()
+	message(FATAL_ERROR "Path \${RS_COLLISION_MESHES_PATH} is not set")
+endif()
+
 # Include RLUtilities
 add_subdirectory(RLUtilities)
 

@@ -1,6 +1,6 @@
-[submodule "RocketSim"]
-	path = RocketSim
-	url = https://github.com/ZealanL/RocketSim.git
 [submodule "RLUtilities"]
 	path = RLUtilities
 	url = https://github.com/samuelpmish/RLUtilities.git
+[submodule "RocketSim"]
+	path = RocketSim
+	url = https://github.com/ZealanL/RocketSim.git

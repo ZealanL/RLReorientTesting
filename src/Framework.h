@@ -1,3 +1,4 @@
+#pragma once
 #include "../RocketSim/src/Math/MathTypes/MathTypes.h"
 
 #define TPS 120

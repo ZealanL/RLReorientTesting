@@ -1,9 +1,9 @@
+#pragma once
 #include "../ReorientMethod.h"
 
 class RM_RLU : public ReorientMethod {
 public:
-
-	const char* GetName() const {
+	string GetName() const {
 		return "RLUtilities";
 	}
 
