@@ -84,3 +84,56 @@ RControls RunSteerPDs(RM_RUN_ARGS, Vec localAngVelScale, float spdScale, float s
 RControls RM_RedUtils::Run(RM_RUN_ARGS) {
 	return RunSteerPDs(rot, angVel, targetRot, Vec(0.25f, 0.20f, 0.15f), 35, 3, 10);
 }
+
+RControls RM_BruteForcer::Run(RM_RUN_ARGS) {
+	using namespace RLConst;
+
+	btTransform transform = btTransform(rot);
+
+	btVector3
+		dirPitch_right = -rot.right,
+		dirYaw_up = rot.up,
+		dirRoll_forward = -rot.forward;
+
+	RControls bestControls = RControls(0, 0, 0);
+	float lowestDist = FLT_MAX;
+	for (float yaw = -1; yaw <= 1; yaw++) {
+		for (float pitch = -1; pitch <= 1; pitch++) {
+			for (float roll = -1; roll <= 1; roll += 0.5f) {
+				Vec newAngVel = angVel;
+
+				Vec torque;
+				if (yaw || pitch || roll) {
+					torque = (pitch * dirPitch_right * CAR_AIR_CONTROL_TORQUE.x) +
+						(yaw * dirYaw_up * CAR_AIR_CONTROL_TORQUE.y) +
+						(pitch * dirRoll_forward * CAR_AIR_CONTROL_TORQUE.z);
+				} else {
+					torque = { 0, 0, 0 };
+				}
+
+				float
+					dampPitch = dirPitch_right.dot(angVel) * CAR_AIR_CONTROL_DAMPING.x * (1 - abs(pitch)),
+					dampYaw = dirYaw_up.dot(angVel) * CAR_AIR_CONTROL_DAMPING.y * (1 - abs(yaw)),
+					dampRoll = dirRoll_forward.dot(angVel) * CAR_AIR_CONTROL_DAMPING.z;
+
+				Vec damping =
+					(dirYaw_up * dampYaw) +
+					(dirPitch_right * dampPitch) +
+					(dirRoll_forward * dampRoll);
+
+				newAngVel = angVel + (torque - damping) * CAR_TORQUE_SCALE * TICKTIME;
+
+				btTransform newTransform;
+				btTransformUtil::integrateTransform(transform, btVector3(), newAngVel, TICKTIME, newTransform);
+
+				float dist = Math::RotMatDist(newTransform.getBasis(), targetRot);
+				if (dist < lowestDist) {
+					lowestDist = dist;
+					bestControls = { pitch, yaw, roll };
+				}
+			}
+		}
+	}
+
+	return bestControls;
+}

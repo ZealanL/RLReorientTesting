@@ -17,3 +17,4 @@ inline className* g_##className = new className();
 MAKE_RM(RM_RLU, "RLUtilities");
 MAKE_RM(RM_RLU_ML, "RLUtilities_ML");
 MAKE_RM(RM_RedUtils, "RedUtils");
+MAKE_RM(RM_BruteForcer, "BruteForcer");

@@ -50,13 +50,13 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 	// Does not include overshoot
 	float errorLowerBound = 0;
 	{
-		float dist = Math::RotMatDist(testCase.rot, testCase.targetRot);
+		float angleDist = Math::RotMatDist(testCase.rot, testCase.targetRot);
 		for (float t = 0; t < TIMEOUT_SECONDS; t += TICKTIME) {
-			dist -= (RLConst::CAR_MAX_ANG_SPEED * TICKTIME);
-			if (dist <= 0)
+			angleDist -= (RLConst::CAR_MAX_ANG_SPEED * TICKTIME);
+			if (angleDist <= STOP_ANGLE_THRESHOLD)
 				break;
 
-			float error = (dist / M_PI) * t;
+			float error = (angleDist / M_PI) * t;
 			errorLowerBound += error;
 		}
 	}
@@ -85,8 +85,9 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 		carState = g_Car->GetState();
 
 		// Calculate error
-		float error = (Math::RotMatDist(carState.rotMat, testCase.targetRot) / M_PI) * t;
-		if (error < STOP_ANGLE_THRESHOLD) {
+		float angleDist = Math::RotMatDist(carState.rotMat, testCase.targetRot);
+		float error = (angleDist / M_PI) * t;
+		if (angleDist < STOP_ANGLE_THRESHOLD) {
 			if (carState.angVel.LengthSq() < (STOP_ANGVEL_THRESHOLD * STOP_ANGVEL_THRESHOLD)) {
 				// We're done
 				result.dnf = false;
