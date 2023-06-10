@@ -1,3 +1,6 @@
+# Anything starting with underscore
+_*
+
 # CMake
 CMakeLists.txt.user
 CMakeCache.txt
