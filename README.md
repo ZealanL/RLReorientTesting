@@ -5,6 +5,7 @@ A testing framework for the accuracy and speed of different air orientation meth
 Currently, the following methods are tested:
  - [RLUtilities Hardcoded](https://github.com/samuelpmish/RLUtilities/blob/develop/src/mechanics/reorient.cc)
  - [RLUtilities ML](https://github.com/samuelpmish/RLUtilities/blob/develop/src/mechanics/reorient_ML.cc)
+ - [RedUtils](https://github.com/ItsCodeRed/RedUtils)
 
 # Evaluation
  - Many test cases are generated, each with a random starting rotation, starting angular velocity, and target rotation

@@ -2,6 +2,7 @@
 
 #include "Methods/RM_RLU.h"
 #include "Methods/RM_RLU_ML.h"
+#include "Methods/RM_RedUtils.h"
 #include "TestCase.h"
 #include "TestResult.h"
 
@@ -86,9 +87,11 @@ int main() {
 	g_Arena = Arena::Create(GameMode::THE_VOID);
 	g_Car = g_Arena->AddCar(Team::BLUE);
 
-	vector<ReorientMethod*> methods;
-	methods.push_back(new RM_RLU());
-	methods.push_back(new RM_RLU_ML());
+	vector<ReorientMethod*> methods = {
+		new RM_RLU(),
+		new RM_RLU_ML(),
+		new RM_RedUtils()
+	};
 	
 	if (!methods.empty()) {
 		RS_LOG("Running reorient tests on " << methods.size() << " methods.");
