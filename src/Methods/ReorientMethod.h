@@ -18,6 +18,8 @@ struct RControls {
 // For once, I'm going to use virtual stuff
 class ReorientMethod {
 public:
+	static vector<ReorientMethod*>& GetAllMethods();
+
 	virtual string GetName() const = 0;
 	virtual RControls Run(RM_RUN_ARGS) = 0;
 };

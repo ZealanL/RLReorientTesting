@@ -117,8 +117,10 @@ int main() {
 	g_Arena = Arena::Create(GameMode::THE_VOID);
 	g_Car = g_Arena->AddCar(Team::BLUE);
 	
-	if (!g_Methods.empty()) {
-		RS_LOG("Running reorient tests on " << g_Methods.size() << " methods.");
+	vector<ReorientMethod*>& methods = ReorientMethod::GetAllMethods();
+
+	if (!methods.empty()) {
+		RS_LOG("Running reorient tests on " << methods.size() << " methods.");
 	} else {
 		RS_LOG("No reorient methods to run!");
 		return EXIT_FAILURE;
@@ -135,7 +137,7 @@ int main() {
 	}
 
 	// Run tests for all methods
-	for (ReorientMethod* method : g_Methods) {
+	for (ReorientMethod* method : methods) {
 		RS_LOG("======================================");
 		RS_LOG("Method: " << method->GetName());
 

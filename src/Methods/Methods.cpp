@@ -2,12 +2,11 @@
 
 #include "../../RLUtilities/inc/mechanics/reorient.h"
 #include "../../RLUtilities/inc/mechanics/reorient_ML.h"
+#include "../../RocketSim/libsrc/bullet3-3.24/LinearMath/btTransformUtil.h"
+#include "../../RocketSim/src/RLConst.h"
 #include "../RLUHelp/RLUHelp.h"
 #include "../RLUTModelWeights.h"
-
-std::vector<ReorientMethod*> g_Methods = {};
-
-///////////////////
+#include "../Math/Math.h"
 
 RControls RM_RLU_ML::Run(RM_RUN_ARGS) {
 	static bool first = true;

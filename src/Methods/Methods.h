@@ -1,13 +1,11 @@
 #pragma once
 #include "ReorientMethod.h"
 
-extern std::vector<ReorientMethod*> g_Methods;
-
 #define MAKE_RM(className, strName) \
 class className : public ReorientMethod { \
 public: \
 	className() { \
-		g_Methods.push_back(this); \
+		ReorientMethod::GetAllMethods().push_back(this); \
 	} \
 	string GetName() const { \
 		return strName; \
