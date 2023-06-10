@@ -60,7 +60,20 @@ float SteerPD(float angle, float rate, float scale, float power, float div) {
 	return RS_CLAMP(powf(scale * (angle + rate), power) / div, -1, 1);
 }
 
-RControls RunSteerPDs(Angle targetAngles, Vec localAngVel, Vec localAngVelScale, float spdScale, float spdPower, float spdDiv) {
+RControls RunSteerPDs(RM_RUN_ARGS, Vec localAngVelScale, float spdScale, float spdPower, float spdDiv) {
+
+	// Replicated from AimAt()/SteerPD() in https://github.com/ItsCodeRed/RedUtils/blob/master/RedUtils/Tools.cs
+
+	Vec localForward = rot.Dot(targetRot.forward);
+	Vec localUp = rot.Dot(targetRot.up);
+	Vec localAngVel = rot.Dot(angVel);
+
+	Angle targetAngles = {
+		atan2f(localForward.y,	localForward.x), // Yaw
+		atan2f(localForward.z,	localForward.x), // Pitch
+		atan2f(localUp.y,		localUp.z)		 // Roll
+	};
+
 	Vec scaledLocalAngVel = localAngVel * localAngVelScale;
 	return {
 		SteerPD(targetAngles.pitch,	scaledLocalAngVel.y, spdScale, spdPower, spdDiv),
@@ -70,28 +83,5 @@ RControls RunSteerPDs(Angle targetAngles, Vec localAngVel, Vec localAngVelScale,
 }
 
 RControls RM_RedUtils::Run(RM_RUN_ARGS) {
-
-	// Code copied from AimAt() in https://github.com/ItsCodeRed/RedUtils/blob/master/RedUtils/Tools.cs
-	Vec localForward = rot.Dot(targetRot.forward);
-	Vec localUp = rot.Dot(targetRot.up);
-	Vec localAngVel = rot.Dot(angVel);
-	Angle targetAngles = {
-		atan2f(localForward.y,	localForward.x), // Yaw
-		atan2f(localForward.z,	localForward.x), // Pitch
-		atan2f(localUp.y,		localUp.z)		 // Roll
-	};
-
-	constexpr float
-		SPD_SCALE = 35,
-		SPD_POWER = 3,
-		SPD_DIV = 10;
-
-	return RunSteerPDs(
-		targetAngles, localAngVel, Vec(0.25f, 0.20f, 0.15f), 35, 3, 10);
-
-	return {
-		SteerPD(targetAngles.pitch,	localAngVel.y * 0.20f, SPD_SCALE, SPD_POWER, SPD_DIV), // Pitch
-		SteerPD(targetAngles.yaw,  -localAngVel.z * 0.15f, SPD_SCALE, SPD_POWER, SPD_DIV), // Yaw
-		SteerPD(targetAngles.roll,	localAngVel.x * 0.25f, SPD_SCALE, SPD_POWER, SPD_DIV)  // Roll
-	};
+	return RunSteerPDs(rot, angVel, targetRot, Vec(0.25f, 0.20f, 0.15f), 35, 3, 10);
 }
