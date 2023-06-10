@@ -48,10 +48,17 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 
 	// Compute minimum possible error (very naive)
 	// Does not include overshoot
-	float minimumPossibleError = 0;
+	float errorLowerBound = 0;
 	{
 		float dist = Math::RotMatDist(testCase.rot, testCase.targetRot);
-		//RLConst::CAR_MAX_ANG_SPEED
+		for (float t = 0; t < TIMEOUT_SECONDS; t += TICKTIME) {
+			dist -= (RLConst::CAR_MAX_ANG_SPEED * TICKTIME);
+			if (dist <= 0)
+				break;
+
+			float error = (dist / M_PI) * t;
+			errorLowerBound += error;
+		}
 	}
 
 	for (float t = 0; t < TIMEOUT_SECONDS; t += TICKTIME) {
@@ -100,6 +107,8 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 		lastError = error;
 	}
 
+	assert(result.error >= errorLowerBound);
+	result.error -= errorLowerBound;
 	return result;
 }
 
@@ -157,8 +166,8 @@ int main() {
 
 		float speed = Math::ErrorToScorePercent(avgError);
 		float accuracy = Math::ErrorToScorePercent(avgOvershootError);
-		RS_LOG(" > Speed: " << std::setprecision(4) << speed << "%");
-		RS_LOG(" > Accuracy: " << std::setprecision(4) << accuracy << "%");
+		RS_LOG(" > Speed:\t" << std::setprecision(4) << speed << "% (" << avgError << " error)");
+		RS_LOG(" > Accuracy:\t" << std::setprecision(4) << accuracy << "% (" << avgOvershootError << " error)");
 	}
 
 	delete g_Arena;

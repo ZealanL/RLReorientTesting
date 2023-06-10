@@ -9,5 +9,5 @@ float Math::RotMatDist(const RotMat& a, const RotMat& b) {
 }
 
 float Math::ErrorToScorePercent(float error) {
-	return (1 / (1 + error / 40)) * 100;
+	return (1 / (1 + error / 16)) * 100;
 }
