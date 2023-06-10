@@ -42,9 +42,6 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 
 	TestResult result;
 	result.dnf = true;
-	
-	bool reached = false;
-	float lastError = 0;
 
 	// Compute minimum possible error (very naive)
 	// Does not include overshoot
@@ -61,6 +58,8 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 		}
 	}
 
+	bool reached = false;
+	float lastAngleDist = 0;
 	for (float t = 0; t < TIMEOUT_SECONDS; t += TICKTIME) {
 		{ // Move ball out of the way
 			BallState ballState = {};
@@ -99,13 +98,13 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 			}
 		}
 
-		if (reached && error > lastError) {
+		if (reached && angleDist > lastAngleDist) {
 			result.overshootError += error;
 		} else {
 			result.error += error;
 		}
 
-		lastError = error;
+		lastAngleDist = angleDist;
 	}
 
 	assert(result.error >= errorLowerBound);
