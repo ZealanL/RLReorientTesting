@@ -72,7 +72,7 @@ TestResult RunTest(ReorientMethod* method, const TestCase& testCase) {
 		carState = g_Car->GetState();
 
 		// Calculate error
-		float error = Math::RotMatDist(carState.rotMat, testCase.targetRot) / M_PI;
+		float error = (Math::RotMatDist(carState.rotMat, testCase.targetRot) / M_PI) * t;
 		if (error < STOP_ANGLE_THRESHOLD) {
 			if (carState.angVel.LengthSq() < (STOP_ANGVEL_THRESHOLD * STOP_ANGVEL_THRESHOLD)) {
 				// We're done
