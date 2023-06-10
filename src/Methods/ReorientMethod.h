@@ -8,9 +8,8 @@ struct RControls {
 		pitch = yaw = roll = 0;
 	}
 
-	RControls(float pitch, float yaw, float roll)
-		: pitch(pitch), yaw(yaw), roll(roll) {
-	}
+	constexpr RControls(float pitch, float yaw, float roll)
+		: pitch(RS_CLAMP(pitch, -1, 1)), yaw(RS_CLAMP(yaw, -1, 1)), roll(RS_CLAMP(roll, -1, 1)) {}
 };
 
 #define RM_RUN_ARGS const RotMat& rot, const Vec& angVel, const RotMat& targetRot
