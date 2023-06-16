@@ -19,6 +19,8 @@ class ReorientMethod {
 public:
 	static vector<ReorientMethod*>& GetAllMethods();
 
+	ReorientMethod(bool addToMethods);
+
 	virtual string GetName() const = 0;
 	virtual RControls Run(RM_RUN_ARGS) = 0;
 };
