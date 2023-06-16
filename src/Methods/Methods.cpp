@@ -85,6 +85,10 @@ RControls RM_RedUtils::Run(RM_RUN_ARGS) {
 	return RunSteerPDs(rot, angVel, targetRot, Vec(0.25f, 0.20f, 0.15f), 35, 3, 10);
 }
 
+RControls RM_RedUtils_Adjusted::Run(RM_RUN_ARGS) {
+	return RunSteerPDs(rot, angVel, targetRot, Vec(0.25f, 0.25f, 0.20f), 35, 3, 9);
+}
+
 RControls RM_BruteForcer::Run(RM_RUN_ARGS) {
 	using namespace RLConst;
 

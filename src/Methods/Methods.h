@@ -13,8 +13,9 @@ public: \
 inline className* g_##className = new className(shouldAddToMethods);
 
 MAKE_RM(RM_RLU, "RLUtilities", true);
-MAKE_RM(RM_RLU_ML, "RLUtilities_ML", true);
+MAKE_RM(RM_RLU_ML, "RLUtilities ML", true);
 MAKE_RM(RM_RedUtils, "RedUtils", true);
+MAKE_RM(RM_RedUtils_Adjusted, "RedUtils Adjusted", true);
 
 constexpr bool
 #ifdef ENABLE_BRUTEFORCER
