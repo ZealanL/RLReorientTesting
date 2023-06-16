@@ -106,7 +106,7 @@ RControls RM_BruteForcer::Run(RM_RUN_ARGS) {
 				if (yaw || pitch || roll) {
 					torque = (pitch * dirPitch_right * CAR_AIR_CONTROL_TORQUE.x) +
 						(yaw * dirYaw_up * CAR_AIR_CONTROL_TORQUE.y) +
-						(pitch * dirRoll_forward * CAR_AIR_CONTROL_TORQUE.z);
+						(roll * dirRoll_forward * CAR_AIR_CONTROL_TORQUE.z);
 				} else {
 					torque = { 0, 0, 0 };
 				}
@@ -126,7 +126,9 @@ RControls RM_BruteForcer::Run(RM_RUN_ARGS) {
 				btTransform newTransform;
 				btTransformUtil::integrateTransform(transform, btVector3(), newAngVel, TICKTIME, newTransform);
 
-				float dist = Math::RotMatDist(newTransform.getBasis(), targetRot);
+				RotMat newRot = (RotMat)newTransform.getBasis();
+
+				float dist = newRot.forward.Dist(targetRot.forward);
 				if (dist < lowestDist) {
 					lowestDist = dist;
 					bestControls = { pitch, yaw, roll };
