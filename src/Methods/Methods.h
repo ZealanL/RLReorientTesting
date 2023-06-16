@@ -15,4 +15,12 @@ inline className* g_##className = new className(shouldAddToMethods);
 MAKE_RM(RM_RLU, "RLUtilities", true);
 MAKE_RM(RM_RLU_ML, "RLUtilities_ML", true);
 MAKE_RM(RM_RedUtils, "RedUtils", true);
-MAKE_RM(RM_BruteForcer, "BruteForcer", true);
+
+constexpr bool
+#ifdef ENABLE_BRUTEFORCER
+_ENABLE_BRUTEFORCER = true;
+#else
+_ENABLE_BRUTEFORCER = false;
+#endif
+
+MAKE_RM(RM_BruteForcer, "BruteForcer", _ENABLE_BRUTEFORCER);
